@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'image',
+    ];
+
+
 
     public function getId()
     {
@@ -77,5 +85,16 @@ class Product extends Model
     public function setUpdated_at($updated_at)
     {
         $this->updated_at = $updated_at;
+    }
+
+    public function exchangeArray($data)
+    {
+        $this->id = isset($data['id']) ? $data['id'] : null;
+        $this->name = isset($data['name']) ? $data['name'] : null;
+        $this->description = isset($data['description']) ? $data['description'] : null;
+        $this->image = isset($data['image']) ? $data['image'] : null;
+        $this->price = isset($data['price']) ? $data['price'] : null;
+        $this->created_at = isset($data['created_at']) ? $data['created_at'] : null;
+        $this->updated_at = isset($data['updated_at']) ? $data['updated_at'] : null;
     }
 }
