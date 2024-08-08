@@ -7,7 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
+    /**
+     * ATTRIBUTES:
+     * id,
+     * name,
+     * description,
+     * image,
+     * price,
+     * created_at,
+     * updated_at,
+     * items
+     */
+    protected $items;
+
     protected $fillable = [
         'name',
         'description',
@@ -16,76 +28,107 @@ class Product extends Model
     ];
 
 
+    // RELATIONS
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    // SETTER && GETTER
 
     public function getId()
     {
-        return $this->id;
+        return $this->attributes['id'];
     }
 
     public function setId($id)
     {
-        $this->id = $id;
+        $this->attributes['id'] = $id;
     }
 
     public function getName()
     {
-        return strtoupper($this->name);
+        return strtoupper($this->attributes['name']);
     }
 
     public function setName($name)
     {
-        $this->name = $name;
+        $this->attributes['name'] = $name;
     }
 
     public function getDescription()
     {
-        return $this->description;
+        return $this->attributes['description'];
     }
 
     public function setDescription($description)
     {
-        $this->description = $description;
+        $this->attributes['description'] = $description;
     }
 
     public function getImage()
     {
-        return $this->image;
+        return $this->attributes['image'];
     }
 
     public function setImage($image)
     {
-        $this->image = $image;
+        $this->attributes['image'] = $image;
     }
 
     public function getPrice()
     {
-        return $this->price;
+        return $this->attributes['price'];
     }
 
     public function setPrice($price)
     {
-        $this->price = $price;
+        $this->attributes['price'] = $price;
     }
 
     public function getCreated_at()
     {
-        return $this->created_at;
+        return $this->attributes['created_at'];
     }
 
     public function setCreated_at($created_at)
     {
-        $this->created_at = $created_at;
+        $this->attributes['created_at'] = $created_at;
     }
 
     public function getUpdated_at()
     {
-        return $this->updated_at;
+        return $this->attributes['updated_at'];
     }
 
     public function setUpdated_at($updated_at)
     {
-        $this->updated_at = $updated_at;
+        $this->attributes['updated_at'] = $updated_at;
     }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function setItems($items)
+    {
+        $this->items = $items;
+    }
+
+    // VALIDATION
+
+    public static function validate($request)
+    {
+        $request->validate([
+            "name" => "required|max:255",
+            "description" => "required",
+            "price" => "required|numeric|gt:0",
+            'image' => 'image',
+        ]);
+    }
+
+    // UTILITY FUNCTIONS
 
     public function exchangeArray($data)
     {
@@ -98,15 +141,6 @@ class Product extends Model
         $this->updated_at = isset($data['updated_at']) ? $data['updated_at'] : null;
     }
 
-    public static function validate($request)
-    {
-        $request->validate([
-            "name" => "required|max:255",
-            "description" => "required",
-            "price" => "required|numeric|gt:0",
-            'image' => 'image',
-        ]);
-    }
 
     public static function sumPricesByQuantities($products, $productsInSession)
     {
