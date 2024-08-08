@@ -97,4 +97,24 @@ class Product extends Model
         $this->created_at = isset($data['created_at']) ? $data['created_at'] : null;
         $this->updated_at = isset($data['updated_at']) ? $data['updated_at'] : null;
     }
+
+    public static function validate($request)
+    {
+        $request->validate([
+            "name" => "required|max:255",
+            "description" => "required",
+            "price" => "required|numeric|gt:0",
+            'image' => 'image',
+        ]);
+    }
+
+    public static function sumPricesByQuantities($products, $productsInSession)
+    {
+        $total = 0;
+        foreach ($products as $product) {
+            $sum = $productsInSession[$product->getId()];
+            $total = $total + ($product->getPrice() * $sum);
+        }
+        return $total;
+    }
 }
